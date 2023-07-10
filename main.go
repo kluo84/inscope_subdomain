@@ -42,17 +42,21 @@ func writeDomainsToFile(domains map[string]bool, filename string) {
 }
 
 func main() {
+	var allDomainsFile, outOfScopeFile string
+	flag.StringVar(&allDomainsFile, "all", "", "File containing all subdomains")
+	flag.StringVar(&outOfScopeFile, "oos", "", "File containing out of scope subdomains")
 	help := flag.Bool("help", false, "Display help information")
+
 	flag.Parse()
 
-	if *help {
+	if *help || allDomainsFile == "" || outOfScopeFile == "" {
 		fmt.Println("This program reads all subdomains and out of scope subdomains from files, compares them and writes the in-scope subdomains to a file.")
-		fmt.Println("Make sure the files 'all_subdomains.txt' and 'out_of_scope_subdomains.txt' are available in the program's directory.")
+		fmt.Println("Usage: main -all [all_domains_file] -oos [out_of_scope_file]")
 		return
 	}
 
-	allSubdomains := readDomainsFromFile("all_subdomains.txt")
-	outOfScopeSubdomains := readDomainsFromFile("out_of_scope_subdomains.txt")
+	allSubdomains := readDomainsFromFile(allDomainsFile)
+	outOfScopeSubdomains := readDomainsFromFile(outOfScopeFile)
 
 	inScopeSubdomains := make(map[string]bool)
 	for subdomain := range allSubdomains {
